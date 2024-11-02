@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "722542291854",
+    "project_id": "login-register-a0496",
+    "storage_bucket": "login-register-a0496.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:722542291854:android:b821c657942ef7db0052df",
+        "android_client_info": {
+          "package_name": "com.example.navhost"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCcPkgflhJ0lpcDSLsdp6SEvqyzm6Y8Ii8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:722542291854:android:5405f5a184c36f720052df",
+        "android_client_info": {
+          "package_name": "com.example.vetapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCcPkgflhJ0lpcDSLsdp6SEvqyzm6Y8Ii8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
