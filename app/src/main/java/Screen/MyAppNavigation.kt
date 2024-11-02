@@ -1,6 +1,7 @@
 package com.example.navhost
 
 
+import Screen.PetViewModel
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -24,6 +25,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -35,6 +37,7 @@ import androidx.navigation.compose.rememberNavController
 @Composable
 fun MyAppNavigation(modifier: Modifier = Modifier,authViewModel: AuthViewModel, navController: NavHostController){
 
+    val viewModel: PetViewModel = viewModel()
 
     NavHost(navController = navController, startDestination = "login", modifier = modifier){
         composable(route = "login"){
@@ -44,10 +47,10 @@ fun MyAppNavigation(modifier: Modifier = Modifier,authViewModel: AuthViewModel, 
             SignupScreen(modifier,navController,authViewModel)
         }
         composable(route = "home"){
-            HomeScreen(modifier,navController,authViewModel)
+            HomeScreen(modifier,navController,authViewModel, viewModel)
         }
         composable(route = "pet"){
-            PetScreen(modifier,navController,authViewModel)
+            PetScreen(modifier,navController,authViewModel, viewModel)
         }
         composable(route = "settings"){
             SettingScreen(modifier,navController,authViewModel)

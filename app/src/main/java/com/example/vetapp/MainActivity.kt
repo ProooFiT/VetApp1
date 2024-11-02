@@ -18,10 +18,15 @@ import com.example.navhost.AuthViewModel
 import com.example.navhost.BottomNavigationTheme
 import com.example.navhost.MyAppNavigation
 import com.example.vetapp.ui.theme.VetAppTheme
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
+
         enableEdgeToEdge()
         val authViewModel: AuthViewModel by viewModels()
         setContent {
