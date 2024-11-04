@@ -2,6 +2,7 @@ package com.example.navhost
 
 import Screen.Pet
 import Screen.PetViewModel
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,6 +19,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 
 @Composable
 fun HomeScreen(
@@ -27,7 +30,8 @@ fun HomeScreen(
     viewModel: PetViewModel
 ) {
     val authState = authViewModel.authState.observeAsState()
-    viewModel.readPetData()
+    val userID = Firebase.auth.currentUser?.uid.toString()
+    viewModel.readPetData(userID)
 
     LaunchedEffect(authState.value) {
         when (authState.value) {
@@ -61,7 +65,8 @@ fun HomeScreen(
 fun showPet(modifier: Modifier, petData: Pet,){
     Row(modifier = modifier
         .fillMaxWidth()
-        .padding(8.dp)){
+        .padding(8.dp)
+    ){
         Text(text = petData.name)
         Text(text = petData.type)
         Text(text = petData.age)

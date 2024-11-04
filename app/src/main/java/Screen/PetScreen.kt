@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.database
@@ -75,8 +76,8 @@ fun PetScreen(
 
                 database = Firebase.database.reference
                 val petId = database.push().key!!
-
-                viewModel.savePet(petName, petId, petAge, petType)
+                val userID = Firebase.auth.currentUser?.uid.toString()
+                viewModel.savePet(petName, petId, petAge, petType, userID)
             }
 
         }
