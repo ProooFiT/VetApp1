@@ -1,4 +1,4 @@
-package Screen
+package com.example.navhost
 
 import Screen.PetViewModel
 import androidx.compose.foundation.layout.Arrangement
@@ -18,8 +18,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
-import com.example.navhost.AuthState
-import com.example.navhost.AuthViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.database.DatabaseReference
@@ -29,7 +27,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-private lateinit var database: DatabaseReference
 
 @Composable
 fun EditPetScreen(
@@ -38,7 +35,6 @@ fun EditPetScreen(
     authViewModel: AuthViewModel,
     viewModel: PetViewModel,
     petID: String,
-    userID: String
 ) {
 
     val authState = authViewModel.authState.observeAsState()
@@ -52,7 +48,14 @@ fun EditPetScreen(
         mutableStateOf("")
     }
 
-    viewModel.readPetData(userID)
+
+    LaunchedEffect(authState.value) {
+        when (authState.value) {
+            is AuthState.Unauthenticated -> navController.navigate(route = "login")
+            else -> Unit
+        }
+    }
+
 
     val petData = viewModel.PetListViewState.value.find{it.ID == petID}
 
@@ -62,21 +65,15 @@ fun EditPetScreen(
         petType = petData.type
     }
 
-    LaunchedEffect(authState.value) {
-        when (authState.value) {
-            is AuthState.Unauthenticated -> navController.navigate(route = "login")
-            else -> Unit
-        }
-    }
     Column(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
 
     ) {
-        TextField(value = petName, onValueChange = { petName = it },
-            modifier = Modifier.fillMaxWidth(),
-            label = { Text(text = "name") })
+        TextField(value = petName, onValueChange = {petName = it},
+                modifier = Modifier.fillMaxWidth(),
+            label = { Text(text = "age") })
         TextField(value = petAge, onValueChange = { petAge = it },
             modifier = Modifier.fillMaxWidth(),
             label = { Text(text = "age") })
@@ -88,15 +85,13 @@ fun EditPetScreen(
         {
             if (petName.isNotEmpty() && petAge.isNotEmpty() && petType.isNotEmpty()) {
 
-                database = Firebase.database.reference
-                val petId = database.push().key!!
                 val userID = Firebase.auth.currentUser?.uid.toString()
-                viewModel.savePet(petName, petId, petAge, petType, userID)
+                viewModel.savePet(petName, petID, petAge, petType, userID)
             }
 
         }
         ) {
-            Text(text = "")
+            Text(text = "save edit")
 
 
         }

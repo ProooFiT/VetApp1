@@ -82,7 +82,7 @@ fun PetScreen(
 
         }
         ) {
-            Text(text = "zapiszxd")
+            Text(text = "save")
 
 
         }

@@ -1,7 +1,6 @@
 package com.example.navhost
 
 
-import Screen.EditPetScreen
 import Screen.PetViewModel
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
@@ -60,7 +59,6 @@ fun MyAppNavigation(modifier: Modifier = Modifier,authViewModel: AuthViewModel, 
         composable(route = "settings"){
             SettingScreen(modifier,navController,authViewModel)
         }
-
         composable(route = "edit?petID={petID}"){ backStackEntry ->
             val petID = backStackEntry.arguments?.getString("petID") ?: ""
 
@@ -69,7 +67,7 @@ fun MyAppNavigation(modifier: Modifier = Modifier,authViewModel: AuthViewModel, 
             val petData = viewModel.PetListViewState.value.find{it.ID == petID}
 
             petData?.let {
-                EditPetScreen(modifier,navController,authViewModel, viewModel, petID, userID)
+                EditPetScreen(modifier,navController,authViewModel, viewModel, petID)
             }
         }
     }

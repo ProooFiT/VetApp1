@@ -44,13 +44,7 @@ class PetViewModel : ViewModel() {
 
     }
 
-    fun deletePet(
-        petID: String,
-        userID: String,
-    ) {
-        petCollectionRef.child(userID).child("pets").child(petID).removeValue().addOnSuccessListener { readPetData(userID) }
-
-
-    }
-
 }
+
+
+
