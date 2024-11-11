@@ -2,14 +2,19 @@ package com.example.navhost
 
 import Screen.Pet
 import Screen.PetViewModel
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -47,7 +52,7 @@ fun HomeScreen(
     ) {
 
         items(viewModel.PetListViewState.value) { petData ->
-            showPet(Modifier,petData)
+            showPet(Modifier,petData, navController)
         }
 
         item {
@@ -62,13 +67,41 @@ fun HomeScreen(
 
 }
 @Composable
-fun showPet(modifier: Modifier, petData: Pet,){
-    Row(modifier = modifier
-        .fillMaxWidth()
-        .padding(8.dp)
-    ){
-        Text(text = petData.name)
-        Text(text = petData.type)
-        Text(text = petData.age)
+fun showPet(modifier: Modifier = Modifier, petData: Pet, navController: NavController) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .background(MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(8.dp))
+            .border(1.dp, MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(8.dp))
+            .padding(16.dp)
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = petData.name,
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Text(
+                text = petData.type,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Text(
+                text = petData.age,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Button(onClick = { navigateToEditPet(navController, petData.ID)}) {
+                Text(text = "Edit")
+            }
+        }
     }
+}
+
+fun navigateToEditPet(
+    navController: NavController,
+    petID: String
+){
+    navController.navigate(route = "edit?petID=$petID")
 }

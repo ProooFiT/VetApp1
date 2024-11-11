@@ -1,6 +1,7 @@
 package com.example.navhost
 
 
+import Screen.EditPetScreen
 import Screen.PetViewModel
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
@@ -33,11 +34,15 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 
 @Composable
 fun MyAppNavigation(modifier: Modifier = Modifier,authViewModel: AuthViewModel, navController: NavHostController){
 
     val viewModel: PetViewModel = viewModel()
+
+    val userID = Firebase.auth.currentUser?.uid.toString()
 
     NavHost(navController = navController, startDestination = "login", modifier = modifier){
         composable(route = "login"){
@@ -55,8 +60,21 @@ fun MyAppNavigation(modifier: Modifier = Modifier,authViewModel: AuthViewModel, 
         composable(route = "settings"){
             SettingScreen(modifier,navController,authViewModel)
         }
+
+        composable(route = "edit?petID={petID}"){ backStackEntry ->
+            val petID = backStackEntry.arguments?.getString("petID") ?: ""
+
+            viewModel.readPetData(userID)
+
+            val petData = viewModel.PetListViewState.value.find{it.ID == petID}
+
+            petData?.let {
+                EditPetScreen(modifier,navController,authViewModel, viewModel, petID, userID)
+            }
+        }
     }
 }
+
 
 data class BottomNavigationItem(
     val title: String,
