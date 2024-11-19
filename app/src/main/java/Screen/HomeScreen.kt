@@ -67,7 +67,8 @@ fun HomeScreen(
 
 }
 @Composable
-fun showPet(modifier: Modifier = Modifier, petData: Pet, navController: NavController) {
+fun showPet(modifier: Modifier = Modifier, petData: Pet, navController: NavController, viewModel:PetViewModel) {
+    val userID = Firebase.auth.currentUser?.uid.toString()
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -92,6 +93,8 @@ fun showPet(modifier: Modifier = Modifier, petData: Pet, navController: NavContr
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )
+
+
             Button(onClick = { navigateToEditPet(navController, petData.ID)}) {
                 Text(text = "Edit")
             }

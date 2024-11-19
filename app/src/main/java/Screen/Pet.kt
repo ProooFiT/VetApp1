@@ -8,5 +8,8 @@ data class Pet (
     var type: String,
     var age: String,
     var ID: String,
+    var Img: String,
 )
+
+
 
