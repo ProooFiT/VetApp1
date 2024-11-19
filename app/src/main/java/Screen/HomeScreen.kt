@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,10 +23,15 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.vetapp.R
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
+import com.skydoves.landscapist.components.rememberImageComponent
+import com.skydoves.landscapist.glide.GlideImage
+import com.skydoves.landscapist.placeholder.placeholder.PlaceholderPlugin
 
 @Composable
 fun HomeScreen(
@@ -52,7 +58,7 @@ fun HomeScreen(
     ) {
 
         items(viewModel.PetListViewState.value) { petData ->
-            showPet(Modifier,petData, navController)
+            showPet(Modifier,petData, navController, viewModel)
         }
 
         item {
@@ -67,8 +73,8 @@ fun HomeScreen(
 
 }
 @Composable
-fun showPet(modifier: Modifier = Modifier, petData: Pet, navController: NavController, viewModel:PetViewModel) {
-    val userID = Firebase.auth.currentUser?.uid.toString()
+fun showPet(modifier: Modifier = Modifier, petData: Pet, navController: NavController, viewModel: PetViewModel) {
+        val userID = Firebase.auth.currentUser?.uid.toString()
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -94,9 +100,19 @@ fun showPet(modifier: Modifier = Modifier, petData: Pet, navController: NavContr
                 color = MaterialTheme.colorScheme.onSurface
             )
 
+            GlideImage(
+                imageModel = {petData?.Img}, modifier = modifier.size(128.dp), component = rememberImageComponent {
+                    +PlaceholderPlugin.Failure(
+                        painterResource(id = R.drawable.doges)
+                    )
+                }
+            )
 
             Button(onClick = { navigateToEditPet(navController, petData.ID)}) {
                 Text(text = "Edit")
+            }
+            Button(onClick = {viewModel.deletePet(petData.ID, userID)}) {
+                Text(text = "Delete pet")
             }
         }
     }

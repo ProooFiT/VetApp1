@@ -21,11 +21,7 @@ import androidx.navigation.NavController
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.database
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 private lateinit var database: DatabaseReference
 
@@ -75,16 +71,15 @@ fun PetScreen(
             if (petName.isNotEmpty() && petAge.isNotEmpty() && petType.isNotEmpty()) {
 
                 database = Firebase.database.reference
+                val petImg = ""
                 val petId = database.push().key!!
                 val userID = Firebase.auth.currentUser?.uid.toString()
-                viewModel.savePet(petName, petId, petAge, petType, userID)
+                viewModel.savePet(petName, petId, petAge, petType, userID, petImg)
             }
 
         }
         ) {
             Text(text = "save")
-
-
         }
 
     }
