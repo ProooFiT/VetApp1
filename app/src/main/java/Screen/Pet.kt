@@ -11,5 +11,9 @@ data class Pet (
     var Img: String,
 )
 
-
+data class Appointment(
+    val date: String,
+    val time: String,
+    val reason: String
+)
 

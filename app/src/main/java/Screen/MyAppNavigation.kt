@@ -1,6 +1,5 @@
 package com.example.navhost
-
-
+import Screen.AppointmentScreen
 import Screen.PetViewModel
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
@@ -68,6 +67,17 @@ fun MyAppNavigation(modifier: Modifier = Modifier,authViewModel: AuthViewModel, 
 
             petData?.let {
                 EditPetScreen(modifier,navController,authViewModel, viewModel, petID)
+            }
+        }
+        composable(route = "edit?petID={petID}"){ backStackEntry ->
+            val petID = backStackEntry.arguments?.getString("petID") ?: ""
+
+            viewModel.readPetData(userID)
+
+            val petData = viewModel.PetListViewState.value.find{it.ID == petID}
+
+            petData?.let {
+                AppointmentScreen(viewModel, navController, petID, userID)
             }
         }
     }

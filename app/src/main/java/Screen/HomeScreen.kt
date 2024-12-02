@@ -114,13 +114,23 @@ fun showPet(modifier: Modifier = Modifier, petData: Pet, navController: NavContr
             Button(onClick = {viewModel.deletePet(petData.ID, userID)}) {
                 Text(text = "Delete pet")
             }
+            Button(onClick = { navigateToAppointmentScreen(navController, petData.ID) }) {
+                Text(text = "umow wizyte")
+            }
         }
     }
+
 }
 
 fun navigateToEditPet(
     navController: NavController,
     petID: String
 ){
+    navController.navigate(route = "edit?petID=$petID")
+}
+
+fun navigateToAppointmentScreen(
+    navController: NavController,
+    petID: String) {
     navController.navigate(route = "edit?petID=$petID")
 }
