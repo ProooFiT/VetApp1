@@ -23,7 +23,7 @@ fun AppointmentScreen(
 
     var date by remember { mutableStateOf("") }
     var time by remember { mutableStateOf("") }
-    var reason by remember { mutableStateOf("") }
+    var reason by remember { mutableStateOf(" ") }
 
     Box(
         modifier = Modifier
