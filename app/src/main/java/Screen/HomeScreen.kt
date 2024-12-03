@@ -132,5 +132,5 @@ fun navigateToEditPet(
 fun navigateToAppointmentScreen(
     navController: NavController,
     petID: String) {
-    navController.navigate(route = "edit?petID=$petID")
+    navController.navigate(route = "appointment?petID=$petID")
 }
