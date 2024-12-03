@@ -69,7 +69,7 @@ fun MyAppNavigation(modifier: Modifier = Modifier,authViewModel: AuthViewModel, 
                 EditPetScreen(modifier,navController,authViewModel, viewModel, petID)
             }
         }
-        composable(route = "edit?petID={petID}"){ backStackEntry ->
+        composable(route = "appointment?petID={petID}"){ backStackEntry ->
             val petID = backStackEntry.arguments?.getString("petID") ?: ""
 
             viewModel.readPetData(userID)

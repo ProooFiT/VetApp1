@@ -1,5 +1,7 @@
 package Screen
 
+import DatePickerField
+import TimePickerField
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -34,23 +36,13 @@ fun AppointmentScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
-            // Data input field
-            TextField(
-                value = date,
-                onValueChange = { date = it },
-                label = { Text("Data") },
-                modifier = Modifier.fillMaxWidth()
-            )
 
-            // Time input field
-            TextField(
-                value = time,
-                onValueChange = { time = it },
-                label = { Text("Czas") },
-                modifier = Modifier.fillMaxWidth()
-            )
+            DatePickerField(onDateSelected = { selectedDate -> date = selectedDate })
 
-            // Reason input field
+
+            TimePickerField(onTimeSelected = { selectedTime -> time = selectedTime })
+
+
             TextField(
                 value = reason,
                 onValueChange = { reason = it },
@@ -64,7 +56,7 @@ fun AppointmentScreen(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            // Button to submit the appointment
+
             Button(
                 onClick = {
                     petData?.let {
@@ -80,3 +72,4 @@ fun AppointmentScreen(
         }
     }
 }
+
