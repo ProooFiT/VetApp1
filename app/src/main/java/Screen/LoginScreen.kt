@@ -44,7 +44,7 @@ fun LoginScreen(
     navController: NavController,
     authViewModel: AuthViewModel,
 
-    ){
+){
     val context = LocalContext.current
     val fragmentActivity = context as? FragmentActivity
     val biometricAuthenticator = BiometricAuthenticator(appContext = context)
@@ -115,4 +115,5 @@ fun LoginScreen(
             Text(text = "Login with Biometrics")
         }
 
-    }}
+}}
+

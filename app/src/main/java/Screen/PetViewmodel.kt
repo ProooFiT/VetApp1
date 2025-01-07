@@ -82,11 +82,6 @@ class PetViewModel : ViewModel() {
                 println("Błąd podczas zapisywania wizyty: ${exception.message}")
             }
     }
-
-
-
-
-
 }
 
 

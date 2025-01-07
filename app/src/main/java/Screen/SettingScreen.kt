@@ -1,50 +1,37 @@
-package com.example.navhost
+package com.example.vetapp
 
-import com.example.navhost.AuthState
-import com.example.navhost.AuthViewModel
-import android.graphics.Paint.Align
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
+import android.widget.Switch
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 
 @Composable
-fun SettingScreen(
-    modifier: Modifier = Modifier,
-    navController: NavController,
-    authViewModel: AuthViewModel
-){
-    val authState = authViewModel.authState.observeAsState()
+fun SettingsScreen(
 
-    LaunchedEffect(authState.value) {
-        when(authState.value){
-            is AuthState.Unauthenticated -> navController.navigate(route = "login")
-            else -> Unit
+    navController: NavController
+) {
+    // Pobranie stanu trybu ciemnego z ViewModelu
+
+    // Layout ekranu
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = "Tryb Ciemny",
+                fontSize = 20.sp,
+                modifier = Modifier.padding(end = 16.dp)
+            )
         }
     }
-
-    Column(
-        modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(text = "Pet page", fontSize = 32.sp)
-
-    }
-
 }

@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -17,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.navigation.NavController
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
@@ -61,7 +63,10 @@ fun PetScreen(
             label = { Text(text = "name") })
         TextField(value = petAge, onValueChange = { petAge = it },
             modifier = Modifier.fillMaxWidth(),
-            label = { Text(text = "age") })
+            label = { Text(text = "age") },
+            keyboardOptions = KeyboardOptions.Default.copy(
+                keyboardType = KeyboardType.Number // Ustaw klawiaturę na numeryczną
+            ))
         TextField(value = petType, onValueChange = { petType = it },
             modifier = Modifier.fillMaxWidth(),
             label = { Text(text = "type") })
