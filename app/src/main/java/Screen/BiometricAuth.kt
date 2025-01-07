@@ -19,6 +19,7 @@ class BiometricAuthenticator(
 
     private lateinit var biometricPrompt: BiometricPrompt
 
+
     fun isBiometricAuthAvailable(): BiometricAuthStatus {
         return when (biometricManager.canAuthenticate(BIOMETRIC_STRONG or DEVICE_CREDENTIAL)) {
             BiometricManager.BIOMETRIC_SUCCESS -> BiometricAuthStatus.READY

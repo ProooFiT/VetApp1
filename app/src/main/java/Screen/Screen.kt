@@ -76,6 +76,7 @@ class AuthViewModel : ViewModel() {
     ) {
         _authState.value = AuthState.Loading
 
+
         biometricAuthenticator.promptBiometricAuth(
             title = "Biometric Login",
             subTitle = "Log in using your fingerprint or face",

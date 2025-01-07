@@ -52,6 +52,7 @@ fun PetScreen(
         }
     }
 
+
     Column(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
