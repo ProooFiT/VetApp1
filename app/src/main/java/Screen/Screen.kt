@@ -66,11 +66,39 @@ class AuthViewModel : ViewModel() {
         _authState.value = AuthState.Unauthenticated
     }
 
+    fun loginWithBiometric(
+        biometricAuthenticator: BiometricAuthenticator,
+        fragmentActivity: FragmentActivity,
+        navController: NavController
+    ) {
+        _authState.value = AuthState.Loading
+
+        biometricAuthenticator.promptBiometricAuth(
+            title = "Biometric Login",
+            subTitle = "Log in using your fingerprint or face",
+            negativeButtonText = "Cancel",
+            fragmentActivity = fragmentActivity,
+            onSuccess = { result ->
+                // Zalogowano biometrycznie
+                val user = auth.currentUser
+                if (user != null) {
+                    _authState.value = AuthState.Authenticated
+                    navController.navigate("home")
+                } else {
+                    _authState.value = AuthState.Error("No user found for biometric authentication.")
+                }
+            },
+            onFailed = {
+                _authState.value = AuthState.Error("Biometric authentication failed.")
+            },
+            onError = { errorCode, errString ->
+                _authState.value = AuthState.Error("Error $errorCode: $errString")
+            }
+        )
+    }
 }
 
-
-
-
+}
 
 sealed class AuthState{
     object Authenticated : AuthState()
