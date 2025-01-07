@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -31,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.Placeholder
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.vetapp.R
@@ -116,7 +118,7 @@ fun EditPetScreen(
 
 
 
-        Column(
+    Column(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -130,7 +132,10 @@ fun EditPetScreen(
         TextField(value = petAge, onValueChange = { petAge = it },
             modifier = Modifier.fillMaxWidth(),
             label = { Text(text = "age") },
-            placeholder = { Text(petAge) })
+            placeholder = { Text(petAge) },
+            keyboardOptions = KeyboardOptions.Default.copy(
+                keyboardType = KeyboardType.Number // Ustaw klawiaturę na numeryczną
+            ))
         TextField(value = petType, onValueChange = { petType = it },
             modifier = Modifier.fillMaxWidth(),
             label = { Text(text = "type") },
