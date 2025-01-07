@@ -2,6 +2,8 @@ package com.example.navhost
 
 import android.graphics.Paint.Align
 import android.widget.Toast
+import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,9 +15,11 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -28,16 +32,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.fragment.app.FragmentActivity
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.loc.composebiometricauth.BiometricAuthenticator
+
 
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
-    authViewModel: AuthViewModel
-){
+    authViewModel: AuthViewModel,
 
+    ){
+    val context = LocalContext.current
+    val fragmentActivity = context as? FragmentActivity
+    val biometricAuthenticator = BiometricAuthenticator(appContext = context)
     var email by remember {
         mutableStateOf(value = "")
     }
@@ -45,7 +55,6 @@ fun LoginScreen(
         mutableStateOf(value = "") //do zapamietywania stanu zmiennej password realtime
     }
     val authState = authViewModel.authState.observeAsState()
-    val context = LocalContext.current
 
     LaunchedEffect(authState.value) {
         when(authState.value){
@@ -74,7 +83,6 @@ fun LoginScreen(
             label = {Text(text = "email")
             }
         )
-
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
@@ -98,6 +106,13 @@ fun LoginScreen(
         }) {
             Text(text = "Don't have an account, signup")
         }
-    }
 
-}
+        Button(onClick = {
+            fragmentActivity?.let {
+                authViewModel.loginWithBiometric(biometricAuthenticator, it, navController)
+            }
+        }) {
+            Text(text = "Login with Biometrics")
+        }
+
+    }}
