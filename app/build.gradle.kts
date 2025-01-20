@@ -81,4 +81,5 @@ dependencies {
     implementation(libs.landscapist.placeholder)
     implementation("androidx.biometric:biometric:1.2.0-alpha05")
     implementation("androidx.appcompat:appcompat:1.7.0")
+    implementation ("androidx.compose.material:material-icons-extended:1.7.6")
 }
