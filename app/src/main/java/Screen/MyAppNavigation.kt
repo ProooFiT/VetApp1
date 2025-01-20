@@ -1,4 +1,5 @@
 package com.example.navhost
+import PetAppHisScreen
 import Screen.AppointmentScreen
 
 import Screen.PetViewModel
@@ -83,6 +84,14 @@ fun MyAppNavigation(modifier: Modifier = Modifier,authViewModel: AuthViewModel, 
 
             petData?.let {
                 AppointmentScreen(viewModel, navController, petID, userID)
+            }
+        }
+        composable(route = "petAppHistory?petID={petID}") { backStackEntry ->
+            val petID = backStackEntry.arguments?.getString("petID") ?: ""
+            viewModel.readPetData(userID)
+            val petData = viewModel.PetListViewState.value.find { it.ID == petID }
+            petData?.let {
+                PetAppHisScreen(viewModel, navController, petID, userID)  // Przekazujemy petID
             }
         }
     }

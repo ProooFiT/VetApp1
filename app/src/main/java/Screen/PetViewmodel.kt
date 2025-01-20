@@ -75,7 +75,9 @@ class PetViewModel : ViewModel() {
     fun bookAppointment(pet: Pet, appointment: Appointment, userID: String) {
         val petRef = petCollectionRef.child(userID).child("pets").child(pet.ID).child("appointments")
 
-        petRef.child("0").setValue(appointment)
+        val newAppointmentRef = petRef.push()
+
+        newAppointmentRef.setValue(appointment)
             .addOnSuccessListener {
                 println("Wizyta została pomyślnie zapisana dla zwierzęcia ${pet.ID}.")
             }
@@ -83,6 +85,33 @@ class PetViewModel : ViewModel() {
                 println("Błąd podczas zapisywania wizyty: ${exception.message}")
             }
     }
+    fun getAppointmentHistory(petID: String, userID: String, onComplete: (List<Appointment>) -> Unit) {
+        if (petID.isEmpty() || userID.isEmpty()) {
+            println("Error: petID or userID is empty.")
+            onComplete(emptyList())
+            return
+        }
+
+        val petRef = petCollectionRef.child(userID).child("pets").child(petID).child("appointments")
+
+        petRef.get()
+            .addOnSuccessListener { snapshot ->
+                val appointments = mutableListOf<Appointment>()
+                for (childSnapshot in snapshot.children) {
+                    val appointment = childSnapshot.getValue(Appointment::class.java)
+                    if (appointment != null) {
+                        appointments.add(appointment)
+                    }
+                }
+                onComplete(appointments) // Przekazuje listę wizyt do wywołującego kodu
+            }
+            .addOnFailureListener { exception ->
+                println("Błąd podczas pobierania historii wizyt: ${exception.message}")
+                onComplete(emptyList()) // Zwraca pustą listę w przypadku błędu
+            }
+    }
+
+
 }
 
 

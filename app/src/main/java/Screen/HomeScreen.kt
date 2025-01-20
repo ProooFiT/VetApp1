@@ -117,6 +117,11 @@ fun showPet(modifier: Modifier = Modifier, petData: Pet, navController: NavContr
             Button(onClick = { navigateToAppointmentScreen(navController, petData.ID) }) {
                 Text(text = "umow wizyte")
             }
+            Button(onClick = {
+                navController.navigate("petAppHistory?petID=${petData.ID}")
+            }) {
+                Text(text = "Historia wizyt")
+            }
         }
     }
 

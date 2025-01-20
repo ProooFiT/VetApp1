@@ -12,9 +12,9 @@ data class Pet (
 )
 
 data class Appointment(
-    val date: String,
-    val time: String,
-    val reason: String
+    val date: String = "",
+    val time: String = "",
+    val reason: String = ""
 )
 
 
