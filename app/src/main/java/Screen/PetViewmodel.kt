@@ -72,6 +72,7 @@ class PetViewModel : ViewModel() {
 
     }
 
+
     fun bookAppointment(pet: Pet, appointment: Appointment, userID: String) {
         val petRef = petCollectionRef.child(userID).child("pets").child(pet.ID).child("appointments")
 
