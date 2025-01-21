@@ -45,38 +45,46 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.loc.composebiometricauth.BiometricAuthenticator
 
-
-
-
+/**
+ * Composable function for the Login screen. This screen allows users to log in using
+ * their email and password or through biometric authentication.
+ *
+ * @param modifier Modifier to be applied to the composable.
+ * @param navController NavController used for navigation between screens.
+ * @param authViewModel ViewModel managing authentication logic.
+ */
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
-    authViewModel: AuthViewModel,
-
-){
+    authViewModel: AuthViewModel
+) {
     val context = LocalContext.current
     val fragmentActivity = context as? FragmentActivity
     val biometricAuthenticator = BiometricAuthenticator(appContext = context)
-    var email by remember {
-        mutableStateOf(value = "")
-    }
-    var password by remember {
-        mutableStateOf(value = "") //do zapamietywania stanu zmiennej password realtime
-    }
+
+    // State variables for email, password, and password visibility
+    var email by remember { mutableStateOf(value = "") }
+    var password by remember { mutableStateOf(value = "") }
     var passwordVisible by remember { mutableStateOf(false) }
+
+    // Observe authentication state
     val authState = authViewModel.authState.observeAsState()
 
+    // Perform navigation or show error based on authentication state
     LaunchedEffect(authState.value) {
-        when(authState.value){
+        when (authState.value) {
             is AuthState.Authenticated -> navController.navigate(route = "home")
-            is AuthState.Error -> Toast.makeText(context,
-                (authState.value as AuthState.Error).message, Toast.LENGTH_SHORT).show()
+            is AuthState.Error -> Toast.makeText(
+                context,
+                (authState.value as AuthState.Error).message,
+                Toast.LENGTH_SHORT
+            ).show()
             else -> Unit
         }
-
     }
 
+    // Layout for the login screen
     Column(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -86,16 +94,15 @@ fun LoginScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Email input field
         OutlinedTextField(
             value = email,
-            onValueChange = {
-                email = it
-            },
-            label = {Text(text = "email")
-            }
+            onValueChange = { email = it },
+            label = { Text(text = "email") }
         )
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Password input field with visibility toggle
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
@@ -111,19 +118,20 @@ fun LoginScreen(
             }
         )
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = {
-            authViewModel.login(email,password)
-        }, ) {
+
+        // Login button
+        Button(onClick = { authViewModel.login(email, password) }) {
             Text(text = "login")
         }
 
         Spacer(modifier = Modifier.height(8.dp))
-        Button(onClick = {
-            navController.navigate(route = "signup")
-        }) {
+
+        // Navigation to signup screen
+        Button(onClick = { navController.navigate(route = "signup") }) {
             Text(text = "Don't have an account, signup")
         }
 
+        // Login with biometric button
         Button(onClick = {
             fragmentActivity?.let {
                 authViewModel.loginWithBiometric(biometricAuthenticator, it, navController)
@@ -131,6 +139,5 @@ fun LoginScreen(
         }) {
             Text(text = "Login with Biometrics")
         }
-
-}}
-
+    }
+}

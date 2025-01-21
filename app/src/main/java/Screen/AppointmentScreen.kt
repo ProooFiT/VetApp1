@@ -1,7 +1,7 @@
 package Screen
 
-import DatePickerField
-import TimePickerField
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -73,4 +73,3 @@ fun AppointmentScreen(
         }
     }
 }
-

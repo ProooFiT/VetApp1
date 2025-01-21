@@ -1,6 +1,5 @@
 package com.example.navhost
 
-import android.graphics.Paint.Align
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -38,14 +37,19 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 
-
-
+/**
+ * Funkcja kompozycyjna reprezentująca ekran rejestracji, na którym użytkownicy mogą tworzyć nowe konto.
+ *
+ * @param modifier Modyfikator, który pozwala dostosować układ kompozycji.
+ * @param navController Kontroler nawigacji używany do przechodzenia między ekranami.
+ * @param authViewModel ViewModel, który obsługuje logikę uwierzytelniania.
+ */
 @Composable
 fun SignupScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
     authViewModel: AuthViewModel
-){
+) {
 
     var email by remember {
         mutableStateOf(value = "")
@@ -57,17 +61,19 @@ fun SignupScreen(
     var passwordVisible by remember { mutableStateOf(false) }
 
     val authState = authViewModel.authState.observeAsState()
-    val context = LocalContext.current //
+    val context = LocalContext.current
+
+    // Obsługuje stan uwierzytelniania i nawigację
     LaunchedEffect(authState.value) {
         when(authState.value){
             is AuthState.Authenticated -> navController.navigate(route = "home")
             is AuthState.Error -> Toast.makeText(context,
-                (authState.value as AuthState.Error).message,Toast.LENGTH_SHORT).show()
+                (authState.value as AuthState.Error).message, Toast.LENGTH_SHORT).show()
             else -> Unit
         }
-
     }
 
+    // Układ ekranu rejestracji
     Column(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -77,18 +83,18 @@ fun SignupScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Pole do wpisania adresu e-mail
         OutlinedTextField(
             value = email,
             onValueChange = {
                 email = it
             },
-            label = {Text(text = "email")
-            }
+            label = { Text(text = "email") }
         )
-
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Pole do wpisania hasła z możliwością przełączania widoczności
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
@@ -103,14 +109,19 @@ fun SignupScreen(
                 }
             }
         )
+
         Spacer(modifier = Modifier.height(16.dp))
+
+        // Przycisk do przesłania formularza rejestracji
         Button(onClick = {
-            authViewModel.signup(email,password,navController)
-        }){
+            authViewModel.signup(email, password, navController)
+        }) {
             Text(text = "Create account")
         }
 
         Spacer(modifier = Modifier.height(8.dp))
+
+        // Przycisk do przejścia do ekranu logowania, jeśli użytkownik już ma konto
         Button(onClick = {
             navController.navigate(route = "login")
         }) {

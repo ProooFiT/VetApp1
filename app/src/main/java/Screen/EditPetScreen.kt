@@ -50,8 +50,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 
-
-
+/**
+ * Composable function for editing a pet's details, including name, age, type, and image.
+ * Allows users to pick an image from the gallery or take a photo with the camera.
+ * The updated pet data is saved to Firebase when the "Save Edit" button is clicked.
+ *
+ * @param modifier Modifier to be applied to the composable.
+ * @param navController NavController used for navigation.
+ * @param authViewModel ViewModel managing authentication state.
+ * @param viewModel ViewModel managing pet data.
+ * @param petID The ID of the pet being edited.
+ */
 @Composable
 fun EditPetScreen(
     modifier: Modifier = Modifier,
@@ -60,8 +69,7 @@ fun EditPetScreen(
     viewModel: PetViewModel,
     petID: String,
 ) {
-
-
+    // Authentication state observation and navigation to login if unauthenticated
     val authState = authViewModel.authState.observeAsState()
     val context = LocalContext.current
 
@@ -72,23 +80,24 @@ fun EditPetScreen(
         }
     }
 
-
+    // Find pet data based on the petID
     val petData = viewModel.PetListViewState.value.find { it.ID == petID }
 
+    // Pet details state
     var petName by remember { mutableStateOf(petData?.name ?: "") }
     var petAge by remember { mutableStateOf(petData?.age ?: "") }
     var petType by remember { mutableStateOf(petData?.type ?: "") }
 
-
-
+    // Image selection state
     var selectedImage by remember { mutableStateOf<Uri?>(null) }
 
+    // Launcher for picking image from gallery
     val photoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri -> selectedImage = uri }
     )
 
-
+    // Launcher for capturing photo with the camera
     val cameraLauncher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap: Bitmap? ->
         bitmap?.let {
             // Convert bitmap to byte array
@@ -105,8 +114,7 @@ fun EditPetScreen(
                 put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
             }
 
-            val imageUri =
-                resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+            val imageUri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
 
             imageUri?.let { uri ->
                 resolver.openOutputStream(uri).use { outputStream ->
@@ -116,19 +124,20 @@ fun EditPetScreen(
         }
     }
 
-
-
+    // Layout for the EditPetScreen
     Column(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
-
     ) {
+        // Text field for pet name
         TextField(value = petName, onValueChange = { petName = it },
             modifier = Modifier.fillMaxWidth(),
-            label = { Text(text = "age") },
+            label = { Text(text = "name") },
             placeholder = { Text(petName) }
         )
+
+        // Text field for pet age
         TextField(value = petAge, onValueChange = { petAge = it },
             modifier = Modifier.fillMaxWidth(),
             label = { Text(text = "age") },
@@ -136,47 +145,44 @@ fun EditPetScreen(
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Number // Ustaw klawiaturę na numeryczną
             ))
+
+        // Text field for pet type
         TextField(value = petType, onValueChange = { petType = it },
             modifier = Modifier.fillMaxWidth(),
             label = { Text(text = "type") },
             placeholder = { Text(petType) })
+
+        // Display selected image or default pet image
         GlideImage(
-            imageModel = {selectedImage ?: petData?.Img}, modifier = modifier.size(128.dp), component = rememberImageComponent {
+            imageModel = { selectedImage ?: petData?.Img }, modifier = modifier.size(128.dp),
+            component = rememberImageComponent {
                 +PlaceholderPlugin.Failure(
                     painterResource(id = R.drawable.doges)
                 )
             }
         )
 
-
-        Button(onClick =
-        {
-
+        // Button to save edited pet data to Firebase
+        Button(onClick = {
             val petImgString = selectedImage.toString()
             val userID = Firebase.auth.currentUser?.uid.toString()
             viewModel.savePet(petName, petID, petAge, petType, userID, petImgString)
-        }
-        ) {
+        }) {
             Text(text = "save edit")
-
-
         }
 
+        // Button to pick image from gallery
         Button(onClick = {
             photoPickerLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-
-
         }) {
             Text(text = "Pick from gallery")
         }
 
+        // Button to capture photo with the camera
         Button(onClick = {
             cameraLauncher.launch()
-
         }) {
             Text(text = "Capture Photo")
         }
-
     }
-
 }

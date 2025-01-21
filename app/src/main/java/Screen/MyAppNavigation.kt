@@ -1,7 +1,7 @@
 package com.example.navhost
-import PetAppHisScreen
-import Screen.AppointmentScreen
 
+import Screen.AppointmentScreen
+import Screen.PetAppHisScreen
 import Screen.PetViewModel
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxSize
@@ -41,47 +41,49 @@ import com.example.vetapp.SettingsScreen
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 
+/**
+ * Funkcja composable, która zarządza przepływem nawigacji w aplikacji.
+ * Definiuje wszystkie ścieżki i odpowiadające im ekrany. Każdy ekran
+ * jest composable, do którego można przejść w zależności od działań użytkownika.
+ *
+ * @param modifier Modyfikator do zastosowania w komponencie.
+ * @param authViewModel ViewModel zarządzający logiką uwierzytelniania.
+ * @param navController Kontroler nawigacji wykorzystywany do nawigacji pomiędzy ekranami.
+ */
 @Composable
-fun MyAppNavigation(modifier: Modifier = Modifier,authViewModel: AuthViewModel, navController: NavHostController){
+fun MyAppNavigation(modifier: Modifier = Modifier, authViewModel: AuthViewModel, navController: NavHostController) {
 
     val viewModel: PetViewModel = viewModel()
-
     val userID = Firebase.auth.currentUser?.uid.toString()
 
-    NavHost(navController = navController, startDestination = "login", modifier = modifier){
-        composable(route = "login"){
-            LoginScreen(modifier,navController,authViewModel)
+    NavHost(navController = navController, startDestination = "login", modifier = modifier) {
+        composable(route = "login") {
+            LoginScreen(modifier, navController, authViewModel)
         }
-        composable(route = "signup"){
-            SignupScreen(modifier,navController,authViewModel)
+        composable(route = "signup") {
+            SignupScreen(modifier, navController, authViewModel)
         }
-        composable(route = "home"){
-            HomeScreen(modifier,navController,authViewModel, viewModel)
+        composable(route = "home") {
+            HomeScreen(modifier, navController, authViewModel, viewModel)
         }
-        composable(route = "pet"){
-            PetScreen(modifier,navController,authViewModel, viewModel)
+        composable(route = "pet") {
+            PetScreen(modifier, navController, authViewModel, viewModel)
         }
-        composable(route = "settings"){
-            SettingsScreen( navController = navController)
+        composable(route = "settings") {
+            SettingsScreen(navController = navController)
         }
-        composable(route = "edit?petID={petID}"){ backStackEntry ->
+        composable(route = "edit?petID={petID}") { backStackEntry ->
             val petID = backStackEntry.arguments?.getString("petID") ?: ""
-
             viewModel.readPetData(userID)
-
-            val petData = viewModel.PetListViewState.value.find{it.ID == petID}
-
+            val petData = viewModel.PetListViewState.value.find { it.ID == petID }
             petData?.let {
-                EditPetScreen(modifier,navController,authViewModel, viewModel, petID)
+                EditPetScreen(modifier, navController, authViewModel, viewModel, petID)
             }
         }
-        composable(route = "appointment?petID={petID}"){ backStackEntry ->
+        composable(route = "appointment?petID={petID}") { backStackEntry ->
             val petID = backStackEntry.arguments?.getString("petID") ?: ""
-
             viewModel.readPetData(userID)
-
-            val petData = viewModel.PetListViewState.value.find{it.ID == petID}
-
+            val petData = viewModel.PetListViewState.value.find { it.ID == petID }
             petData?.let {
                 AppointmentScreen(viewModel, navController, petID, userID)
             }
@@ -91,25 +93,39 @@ fun MyAppNavigation(modifier: Modifier = Modifier,authViewModel: AuthViewModel, 
             viewModel.readPetData(userID)
             val petData = viewModel.PetListViewState.value.find { it.ID == petID }
             petData?.let {
-                PetAppHisScreen(viewModel, navController, petID, userID)  // Przekazujemy petID
+                PetAppHisScreen(viewModel, navController, petID, userID)
             }
         }
     }
 }
 
-
-
+/**
+ * Klasa danych reprezentująca pozycje w dolnym pasku nawigacyjnym w aplikacji.
+ * Każda pozycja zawiera tytuł, ikony dla stanu zaznaczonego i niezaznaczonego,
+ * oraz trasę, do której prowadzi nawigacja.
+ *
+ * @param title Tytuł, który będzie wyświetlany w pozycji na pasku nawigacyjnym.
+ * @param selectedIcon Ikona wyświetlana, gdy pozycja jest zaznaczona.
+ * @param unselectedIcon Ikona wyświetlana, gdy pozycja nie jest zaznaczona.
+ * @param route Trasa, do której prowadzi pozycja na pasku nawigacyjnym.
+ */
 data class BottomNavigationItem(
     val title: String,
     val selectedIcon: ImageVector,
     val unselectedIcon: ImageVector,
     val route: String
-//    val hasNews: Boolean,
-//    val badgeCount: Int? = null
 )
 
+/**
+ * Funkcja composable, która definiuje dolny pasek nawigacyjny aplikacji.
+ * Pasek nawigacyjny wyświetla ikony i tytuły głównych sekcji aplikacji
+ * (Home, Pets, Settings). Pojawia się tylko wtedy, gdy bieżący ekran to nie
+ * ekran logowania ani rejestracji.
+ *
+ * @param navController Kontroler nawigacji używany do zarządzania nawigacją.
+ */
 @Composable
-fun BottomNavigationTheme(navController: NavController){
+fun BottomNavigationTheme(navController: NavController) {
 
     val items = listOf(
         BottomNavigationItem(
@@ -129,42 +145,32 @@ fun BottomNavigationTheme(navController: NavController){
             selectedIcon = Icons.Filled.Settings,
             unselectedIcon = Icons.Outlined.Settings,
             route = "settings"
-        ),
+        )
     )
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
-    if(currentRoute != "login" && currentRoute != "signup"){
+    // Wyświetl dolny pasek nawigacyjny dla ekranów innych niż logowanie i rejestracja
+    if (currentRoute != "login" && currentRoute != "signup") {
         NavigationBar() {
-            items.forEach(){ item ->
-                NavigationBarItem(currentRoute == item.route,
+            items.forEach { item ->
+                NavigationBarItem(
+                    selected = currentRoute == item.route,
                     onClick = {
                         navController.navigate(item.route)
                     },
                     icon = {
                         Icon(
                             imageVector = item.selectedIcon,
-                            contentDescription = null,
+                            contentDescription = null
                         )
                     },
                     label = {
                         Text(item.title)
-                    })
+                    }
+                )
             }
         }
     }
 }
-
-
-//fun NavController.navigateSingleTopTo(route: String) =
-//    this.navigate(route) {
-//        popUpTo(
-//            this@navigateSingleTopTo.graph.findStartDestination().id
-//        ) {
-//            saveState = true
-//        }
-//        launchSingleTop = true
-//        restoreState = true
-//    }
-//

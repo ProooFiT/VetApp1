@@ -1,6 +1,5 @@
 package com.example.vetapp
 
-import Screen.ThemeManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -9,7 +8,6 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -21,17 +19,30 @@ import com.example.navhost.BottomNavigationTheme
 import com.example.navhost.MyAppNavigation
 import com.example.vetapp.ui.theme.VetAppTheme
 
-
+/**
+ * Main activity of the VetApp application.
+ * This activity serves as the entry point of the app, initializing navigation,
+ * theming, and the ViewModel for authentication.
+ */
 class MainActivity : FragmentActivity() {
-    private lateinit var themeManager: ThemeManager
+    /**
+     * Manager responsible for handling theme-related changes dynamically.
+     */
+//    private lateinit var themeManager: ThemeManager
 
+    /**
+     * Called when the activity is created.
+     * Initializes the ThemeManager, ViewModel, and sets up the Compose content.
+     *
+     * @param savedInstanceState Bundle containing the activity's previously saved state, if any.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         enableEdgeToEdge()
 
-        // Inicjalizacja ThemeManager
-        themeManager = ThemeManager(this)
+        // Initialize ThemeManager
+//        themeManager = ThemeManager(this)
 
         val authViewModel: AuthViewModel by viewModels()
         setContent {
@@ -49,15 +60,23 @@ class MainActivity : FragmentActivity() {
                 }
             }
         }
-    }
+    }}
 
-    override fun onResume() {
-        super.onResume()
-        themeManager.startListening()
-    }
+    /**
+     * Called when the activity enters the Resumed state.
+     * Starts listening for theme-related changes via the ThemeManager.
+     */
+//    override fun onResume() {
+//        super.onResume()
+//        themeManager.startListening()
+//    }
 
-    override fun onPause() {
-        super.onPause()
-        themeManager.stopListening()
-    }
-}
+    /**
+     * Called when the activity is about to enter the Paused state.
+     * Stops listening for theme-related changes via the ThemeManager.
+     */
+//    override fun onPause() {
+//        super.onPause()
+//        themeManager.stopListening()
+//    }
+//}

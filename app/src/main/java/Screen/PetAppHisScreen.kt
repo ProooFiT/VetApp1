@@ -1,46 +1,33 @@
-import Screen.Appointment
-import Screen.Pet
-import Screen.PetViewModel
+package Screen
+
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.foundation.layout.Spacer
-
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.vetapp.R
-import com.google.firebase.Firebase
-import com.google.firebase.auth.auth
-import com.skydoves.landscapist.components.rememberImageComponent
-import com.skydoves.landscapist.glide.GlideImage
-import com.skydoves.landscapist.placeholder.placeholder.PlaceholderPlugin
 
-
+/**
+ * Komponent wyświetlający historię wizyt zwierzęcia.
+ *
+ * Ten ekran pobiera i wyświetla listę wizyt dla konkretnego zwierzęcia.
+ * Zawiera datę, godzinę oraz powód każdej wizyty.
+ *
+ * @param viewModel ViewModel odpowiedzialny za pobieranie danych o wizytach.
+ * @param navController NavController używany do nawigacji między ekranami.
+ * @param petID ID zwierzęcia, którego historia wizyt jest wyświetlana.
+ * @param userID ID użytkownika, który żąda historii wizyt.
+ */
 @Composable
 fun PetAppHisScreen(
     viewModel: PetViewModel,
@@ -48,30 +35,32 @@ fun PetAppHisScreen(
     petID: String,
     userID: String
 ) {
+    // Stan do przechowywania listy wizyt
     var appointmentHistory by remember { mutableStateOf<List<Appointment>>(emptyList()) }
 
-    // Pobieranie historii wizyt
+    // Pobieranie historii wizyt przy użyciu viewModel
     LaunchedEffect(petID) {
         viewModel.getAppointmentHistory(petID, userID) { appointments ->
             appointmentHistory = appointments
         }
     }
 
+    // Główna kolumna wyświetlająca zawartość ekranu
     Column(modifier = Modifier.padding(16.dp)) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Wyświetlanie historii wizyt
+        // Wyświetlanie tytułu
         Text(
             text = "Historia wizyt:",
             style = MaterialTheme.typography.bodyLarge
         )
 
-        // Sprawdzanie, czy historia wizyt jest pusta
+        // Wyświetlanie komunikatu, jeśli nie znaleziono wizyt
         if (appointmentHistory.isEmpty()) {
             Text("Brak wizyt.")
         } else {
-            // Wyświetlanie historii wizyt w formie listy
+            // Wyświetlanie historii wizyt w LazyColumn
             LazyColumn {
                 items(appointmentHistory) { appointment ->
                     Column(modifier = Modifier.padding(8.dp)) {
@@ -86,11 +75,9 @@ fun PetAppHisScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Przycisk powrotu
+        // Przycisk do powrotu do poprzedniego ekranu
         Button(onClick = { navController.popBackStack() }) {
             Text(text = "Powrót")
         }
     }
 }
-
-

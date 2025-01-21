@@ -1,10 +1,7 @@
 package com.example.navhost
 
 import Screen.PetViewModel
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -27,6 +24,17 @@ import com.google.firebase.database.database
 
 private lateinit var database: DatabaseReference
 
+/**
+ * Composable screen for adding a new pet to the database.
+ *
+ * This screen allows the user to input details about their pet, including the name, age, and type.
+ * After filling out the form, the user can save the pet's information to the Firebase database.
+ *
+ * @param modifier Modifier to apply to the layout.
+ * @param navController The NavController for handling navigation between screens.
+ * @param authViewModel The ViewModel that handles user authentication state.
+ * @param viewModel The ViewModel that handles pet-related data operations.
+ */
 @Composable
 fun PetScreen(
     modifier: Modifier = Modifier,
@@ -34,17 +42,15 @@ fun PetScreen(
     authViewModel: AuthViewModel,
     viewModel: PetViewModel
 ) {
+    // Observing authentication state
     val authState = authViewModel.authState.observeAsState()
-    var petName by remember {
-        mutableStateOf("")
-    }
-    var petAge by remember {
-        mutableStateOf("")
-    }
-    var petType by remember {
-        mutableStateOf("")
-    }
 
+    // States for pet details input
+    var petName by remember { mutableStateOf("") }
+    var petAge by remember { mutableStateOf("") }
+    var petType by remember { mutableStateOf("") }
+
+    // Redirecting to login screen if user is not authenticated
     LaunchedEffect(authState.value) {
         when (authState.value) {
             is AuthState.Unauthenticated -> navController.navigate(route = "login")
@@ -52,42 +58,51 @@ fun PetScreen(
         }
     }
 
-
+    // Main Column to display the pet creation form
     Column(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
-
     ) {
-        TextField(value = petName, onValueChange = { petName = it },
+        // Pet name input field
+        TextField(
+            value = petName,
+            onValueChange = { petName = it },
             modifier = Modifier.fillMaxWidth(),
-            label = { Text(text = "name") })
-        TextField(value = petAge, onValueChange = { petAge = it },
+            label = { Text(text = "name") }
+        )
+
+        // Pet age input field with numeric keyboard
+        TextField(
+            value = petAge,
+            onValueChange = { petAge = it },
             modifier = Modifier.fillMaxWidth(),
             label = { Text(text = "age") },
             keyboardOptions = KeyboardOptions.Default.copy(
-                keyboardType = KeyboardType.Number // Ustaw klawiaturę na numeryczną
-            ))
-        TextField(value = petType, onValueChange = { petType = it },
+                keyboardType = KeyboardType.Number // Numeric keyboard for age input
+            )
+        )
+
+        // Pet type input field
+        TextField(
+            value = petType,
+            onValueChange = { petType = it },
             modifier = Modifier.fillMaxWidth(),
-            label = { Text(text = "type") })
+            label = { Text(text = "type") }
+        )
 
-        Button(onClick =
-        {
+        // Button to save the pet details
+        Button(onClick = {
+            // Saving pet data to Firebase if all fields are filled
             if (petName.isNotEmpty() && petAge.isNotEmpty() && petType.isNotEmpty()) {
-
                 database = Firebase.database.reference
-                val petImg = ""
-                val petId = database.push().key!!
+                val petImg = "" // Placeholder for pet image URL
+                val petId = database.push().key!! // Generate a new ID for the pet
                 val userID = Firebase.auth.currentUser?.uid.toString()
                 viewModel.savePet(petName, petId, petAge, petType, userID, petImg)
             }
-
-        }
-        ) {
+        }) {
             Text(text = "save")
         }
-
     }
-
 }

@@ -33,6 +33,16 @@ import com.skydoves.landscapist.components.rememberImageComponent
 import com.skydoves.landscapist.glide.GlideImage
 import com.skydoves.landscapist.placeholder.placeholder.PlaceholderPlugin
 
+/**
+ * Composable function for the Home screen that displays a list of pets.
+ * This screen retrieves pet data for the authenticated user, and allows the user to
+ * sign out or interact with the pet items (view details, edit, delete, or schedule an appointment).
+ *
+ * @param modifier Modifier to be applied to the composable.
+ * @param navController NavController used for navigation between screens.
+ * @param authViewModel ViewModel managing authentication state.
+ * @param viewModel ViewModel managing pet data.
+ */
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
@@ -40,6 +50,7 @@ fun HomeScreen(
     authViewModel: AuthViewModel,
     viewModel: PetViewModel
 ) {
+    // Observe authentication state and navigate to login if unauthenticated
     val authState = authViewModel.authState.observeAsState()
     val userID = Firebase.auth.currentUser?.uid.toString()
     viewModel.readPetData(userID)
@@ -51,30 +62,39 @@ fun HomeScreen(
         }
     }
 
+    // Lazy column to display a list of pets
     LazyColumn(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
+        // Display each pet in the list
         items(viewModel.PetListViewState.value) { petData ->
-            showPet(Modifier,petData, navController, viewModel)
+            showPet(Modifier, petData, navController, viewModel)
         }
 
+        // Sign out button
         item {
             TextButton(onClick = { authViewModel.signout() }) {
                 Text(text = "sign out")
             }
         }
-
-
     }
-
-
 }
+
+/**
+ * Composable function to display an individual pet's details in a row, including its name, type,
+ * age, and image. Provides buttons for editing, deleting the pet, and scheduling appointments.
+ *
+ * @param modifier Modifier to be applied to the composable.
+ * @param petData The pet data to be displayed.
+ * @param navController NavController used for navigation between screens.
+ * @param viewModel ViewModel managing pet data.
+ */
 @Composable
 fun showPet(modifier: Modifier = Modifier, petData: Pet, navController: NavController, viewModel: PetViewModel) {
-        val userID = Firebase.auth.currentUser?.uid.toString()
+    val userID = Firebase.auth.currentUser?.uid.toString()
+
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -84,6 +104,7 @@ fun showPet(modifier: Modifier = Modifier, petData: Pet, navController: NavContr
             .padding(16.dp)
     ) {
         Column(modifier = Modifier.weight(1f)) {
+            // Display pet's name, type, and age
             Text(
                 text = petData.name,
                 style = MaterialTheme.typography.titleMedium,
@@ -100,18 +121,20 @@ fun showPet(modifier: Modifier = Modifier, petData: Pet, navController: NavContr
                 color = MaterialTheme.colorScheme.onSurface
             )
 
+            // Display pet image with a placeholder
             GlideImage(
-                imageModel = {petData?.Img}, modifier = modifier.size(128.dp), component = rememberImageComponent {
+                imageModel = { petData.Img }, modifier = modifier.size(128.dp), component = rememberImageComponent {
                     +PlaceholderPlugin.Failure(
                         painterResource(id = R.drawable.doges)
                     )
                 }
             )
 
-            Button(onClick = { navigateToEditPet(navController, petData.ID)}) {
+            // Buttons for various actions
+            Button(onClick = { navigateToEditPet(navController, petData.ID) }) {
                 Text(text = "Edit")
             }
-            Button(onClick = {viewModel.deletePet(petData.ID, userID)}) {
+            Button(onClick = { viewModel.deletePet(petData.ID, userID) }) {
                 Text(text = "Delete pet")
             }
             Button(onClick = { navigateToAppointmentScreen(navController, petData.ID) }) {
@@ -124,19 +147,30 @@ fun showPet(modifier: Modifier = Modifier, petData: Pet, navController: NavContr
             }
         }
     }
-
-
 }
 
+/**
+ * Function to navigate to the Edit Pet screen.
+ *
+ * @param navController NavController used for navigation.
+ * @param petID The ID of the pet to be edited.
+ */
 fun navigateToEditPet(
     navController: NavController,
     petID: String
-){
+) {
     navController.navigate(route = "edit?petID=$petID")
 }
 
+/**
+ * Function to navigate to the Appointment screen for the selected pet.
+ *
+ * @param navController NavController used for navigation.
+ * @param petID The ID of the pet for the appointment.
+ */
 fun navigateToAppointmentScreen(
     navController: NavController,
-    petID: String) {
+    petID: String
+) {
     navController.navigate(route = "appointment?petID=$petID")
 }

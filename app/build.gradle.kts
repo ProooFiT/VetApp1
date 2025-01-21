@@ -2,11 +2,37 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.google.gms.google.services)
+    alias(libs.plugins.dokka)
 }
 
 android {
     namespace = "com.example.vetapp"
     compileSdk = 34
+
+
+    tasks.dokkaHtml {
+        outputDirectory = file("$buildDir/dokka/html") // określamy folder, w którym ma być zapisana dokumentacja
+        dokkaSourceSets {
+            configureEach {
+                includeNonPublic.set(false)
+                skipDeprecated.set(true)
+                reportUndocumented.set(true)
+                jdkVersion.set(8)
+            }
+        }
+    }
+
+    tasks.dokkaJavadoc {
+        dokkaSourceSets {
+            configureEach {
+                includeNonPublic.set(false)
+                skipDeprecated.set(true)
+                reportUndocumented.set(true)
+                jdkVersion.set(8)
+            }
+        }
+    }
+
 
     defaultConfig {
         applicationId = "com.example.vetapp"
